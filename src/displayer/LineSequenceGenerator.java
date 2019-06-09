@@ -13,11 +13,11 @@ public class LineSequenceGenerator {
 		for (Point d : p.doors) {
 			ArrayList<Point> door = new ArrayList<Point> ();
 			
-			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y + 1));
-			door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y + 1));
-			door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y + 3));
-			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y + 3));
-			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y + 1));
+			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
+			door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y - 2));
+			door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y));
+			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y));
+			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
 			
 			returnee.add(door);
 		}
@@ -31,12 +31,22 @@ public class LineSequenceGenerator {
 			Point pas = p.passagePoints[n];
 			int offset = 0;
 			
-			if (n < pl-1 && p.passagePoints[n+1].y > p.passagePoints[n].y) offset = 1;
-			if (n > 0 && p.passagePoints[n].y > p.passagePoints[n-1].y) offset = 1;
+			if (n < pl-1 && p.passagePoints[n+1].y > p.passagePoints[n].y) {
+				offset = 1;
+				if (Math.abs(pas.x - p.passagePoints[n+1].x) == 0) {
+					offset = 3;
+				}
+			}
+			if (n > 0 && p.passagePoints[n].y > p.passagePoints[n-1].y) {
+				offset = 1;
+				if (Math.abs(pas.x - p.passagePoints[n-1].x) == 0) {
+					offset = 3;
+				}
+			}
 			if (n < pl-1 && p.passagePoints[n+1].y < p.passagePoints[n].y) offset = -1;
 			if (n > 0 && p.passagePoints[n].y < p.passagePoints[n-1].y) offset = -1;
 			
-			topSeq.add(new Point (p.origin.x + pas.x + offset, p.origin.y + pas.y));
+			topSeq.add(new Point (p.origin.x + pas.x + offset, p.origin.y + pas.y - 3));
 		}
 		
 		returnee.add(topSeq);
@@ -50,17 +60,17 @@ public class LineSequenceGenerator {
 
 			if (n < pl-1) {
 				float dif = Math.abs(pas.y - p.passagePoints[n+1].y);
-				if (dif > 0) {
+				if (dif > 0 && Math.abs(pas.x - p.passagePoints[n+1].x) > 0) {
 					for (int i = 0,j = 0; i <= dif*2; i++) {
 						if (i > 0) j = i-1;
-						bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y + 3 + ((float)j / 2)));
-						bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y + 3 + ((float)i / 2)));
+						bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y + ((float)j / 2)));
+						bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y + ((float)i / 2)));
 					}
 				} else {
-					bottomSeq.add(new Point (p.origin.x + pas.x, p.origin.y + pas.y + 3));
+					bottomSeq.add(new Point (p.origin.x + pas.x, p.origin.y + pas.y));
 				}
 			} else {
-				bottomSeq.add(new Point (p.origin.x + pas.x, p.origin.y + pas.y + 3));
+				bottomSeq.add(new Point (p.origin.x + pas.x, p.origin.y + pas.y));
 			}
 			
 			
@@ -72,8 +82,8 @@ public class LineSequenceGenerator {
 		if (p.closedLeft) {
 			ArrayList<Point> leftSeq = new ArrayList<Point> ();
 			
+			leftSeq.add(new Point (p.origin.x + p.passagePoints[0].x, p.origin.y + p.passagePoints[0].y - 3));
 			leftSeq.add(new Point (p.origin.x + p.passagePoints[0].x, p.origin.y + p.passagePoints[0].y));
-			leftSeq.add(new Point (p.origin.x + p.passagePoints[0].x, p.origin.y + p.passagePoints[0].y + 3));
 			
 			returnee.add(leftSeq);
 		}
@@ -84,8 +94,8 @@ public class LineSequenceGenerator {
 			
 			int lastInd = p.passagePoints.length-1;
 			
+			rightSeq.add(new Point (p.origin.x + p.passagePoints[lastInd].x, p.origin.y + p.passagePoints[lastInd].y - 3));
 			rightSeq.add(new Point (p.origin.x + p.passagePoints[lastInd].x, p.origin.y + p.passagePoints[lastInd].y));
-			rightSeq.add(new Point (p.origin.x + p.passagePoints[lastInd].x, p.origin.y + p.passagePoints[lastInd].y + 3));
 			
 			returnee.add(rightSeq);
 		}
