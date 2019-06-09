@@ -8,4 +8,8 @@ public class Point {
 		x = xa;
 		y = ya;
 	}
+	
+	public String toString () {
+		return "X: " + x + " Y: " + y;
+	}
 }
