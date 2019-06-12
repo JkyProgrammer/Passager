@@ -12,4 +12,8 @@ public class Point {
 	public String toString () {
 		return "X: " + x + " Y: " + y;
 	}
+	
+	public Point duplicate () {
+		return new Point (x, y);
+	}
 }

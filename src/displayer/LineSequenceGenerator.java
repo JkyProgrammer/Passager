@@ -75,9 +75,10 @@ public class LineSequenceGenerator {
 				if (dif != 0 && Math.abs(pas.x - p.passagePoints.get(n+1).x) > 0) {
 					if (dif > 0) {
 						for (int i = 0,j = 0; i <= dif*2; i++) {
-							if (i > 0) j = i-1;
-							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y - ((float)j / 2)));
+							j = i + 1;
+							if (i == dif*2) j = i;
 							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y - ((float)i / 2)));
+							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y - ((float)j / 2)));
 						}
 					} else {
 						for (int i = 0,j = 0; i <= Math.abs(dif)*2; i++) {

@@ -21,4 +21,25 @@ public class Passage {
 	public void addDoor (Point p) {
 		doors.add (p);
 	}
+	
+	private ArrayList<Point> cloneArray (ArrayList<Point> pts) {
+		ArrayList<Point> newArr = new ArrayList<Point> ();
+		
+		for (Point p : pts) {
+			newArr.add(p.duplicate());
+		}
+		
+		return newArr;
+	}
+	
+	public Passage duplicate () {
+		Passage dup = new Passage ();
+		dup.closedLeft = closedLeft;
+		dup.closedRight = closedRight;
+		dup.origin = origin.duplicate();
+		dup.doors = cloneArray (doors);
+		dup.passagePoints = cloneArray (passagePoints);
+		
+		return dup;
+	}
 }

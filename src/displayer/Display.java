@@ -7,12 +7,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Display extends JFrame {
 
@@ -51,7 +54,10 @@ public class Display extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				p.appendPassagePoint(new Point (mousePos.x, mousePos.y));
+				if (SwingUtilities.isLeftMouseButton(e))
+					editingPassage.appendPassagePoint(new Point (mousePos.x, mousePos.y));
+				if (SwingUtilities.isRightMouseButton(e))
+					editingPassage.addDoor(new Point (mousePos.x, mousePos.y));
 				repaint();
 			}
 
@@ -67,17 +73,42 @@ public class Display extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {}
 		});
+		
+		addKeyListener(new KeyListener () {
+
+			@Override
+			public void keyTyped(KeyEvent e) {}
+
+			@Override
+			public void keyPressed(KeyEvent e) {}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
+					if (editingPassage.passagePoints.size() > 0)
+						editingPassage.passagePoints.remove(editingPassage.passagePoints.size()-1);
+				if (e.getKeyChar() == KeyEvent.VK_ENTER)
+					passages.add (editingPassage.duplicate());
+					editingPassage = new Passage ();
+				repaint ();
+			}
+		});
+		
 		setVisible(true);
 		setSize(new Dimension (1000, 500));
+		
+		
 	}
 	
 	int size = 20;
 	
-	Passage p = new Passage ();
+	ArrayList<Passage> passages = new ArrayList<Passage> ();
+	Passage editingPassage = new Passage ();
 	
 	@Override
 	public void paint (Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
+		
 		g2.setColor(Color.white);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		
@@ -88,6 +119,14 @@ public class Display extends JFrame {
 			}
 		}
 		
+		paintPassage (editingPassage, g2);
+		for (Passage p : passages) {
+			paintPassage (p, g2);
+		}
+		
+	}
+	
+	public void paintPassage (Passage p, Graphics2D g2) {
 		ArrayList<ArrayList<Point>> drawable = LineSequenceGenerator.makeAbsoluteLinesFrom(p);
 		
 		g2.setColor(Color.black);
