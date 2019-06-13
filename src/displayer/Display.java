@@ -56,9 +56,9 @@ public class Display extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e))
-					passages[editingIndex].appendPassagePoint(new Point (mousePos.x, mousePos.y));
+					passages.get(editingIndex).appendPassagePoint(new Point (mousePos.x, mousePos.y));
 				if (SwingUtilities.isRightMouseButton(e))
-					passages[editingIndex].addDoor(new Point (mousePos.x, mousePos.y));
+					passages.get(editingIndex).addDoor(new Point (mousePos.x, mousePos.y));
 				repaint();
 			}
 
@@ -78,27 +78,34 @@ public class Display extends JFrame {
 		addKeyListener(new KeyListener () {
 
 			@Override
-			public void keyTyped(KeyEvent e) {}
+			public void keyTyped(KeyEvent e) {
+				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+					if (passages.get(editingIndex).passagePoints.size() > 0) passages.get(editingIndex).passagePoints.remove(passages.get(editingIndex).passagePoints.size()-1);
+				}
+				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+					passages.add (new Passage ());
+					editingIndex = passages.size()-1;
+					System.out.println("New path made");
+				}
+				if (e.getKeyChar() == '[') {
+					if (editingIndex > 0) {
+						editingIndex -= 1;
+						System.out.println(editingIndex);
+					}
+					
+				}
+				if (e.getKeyChar() == ']') {
+					if (editingIndex < passages.size()-1) editingIndex += 1;
+					System.out.println (editingIndex);
+				}
+				repaint ();
+			}
 
 			@Override
 			public void keyPressed(KeyEvent e) {}
 
 			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-					if (passages[editingIndex].passagePoints.size() > 0)
-						passages[editingIndex].passagePoints.remove(passages[editingIndex].passagePoints.size()-1);
-				if (e.getKeyChar() == KeyEvent.VK_ENTER)
-					passages.add (new Passage ());
-					editingIndex = passages.size()-1;
-				if (e.getKeyChar () == ‘[‘) {
-					if (editingIndex > 0) editingIndex -= 1;
-				}
-				if (e.getKeyChar () == ‘]‘) {
-					if (editingIndex < passages.size()-1) editingIndex += 1;
-				}
-				repaint ();
-			}
+			public void keyReleased(KeyEvent e) {}
 		});
 		
 		setVisible(true);
@@ -126,13 +133,17 @@ public class Display extends JFrame {
 			}
 		}
 		
-		for (Passage p : passages) {
-			paintPassage (p, g2, false);
+		for (int i = 0; i < passages.size(); i++) {
+			boolean x = false;
+			if (i == editingIndex) x = true;
+			paintPassage (passages.get(i), g2, x);
 		}
 		
 	}
 	
 	public void paintPassage (Passage p, Graphics2D g2, boolean debug) {
+		if (p.passagePoints.size() < 1) return;
+		
 		ArrayList<ArrayList<Point>> drawable = LineSequenceGenerator.makeAbsoluteLinesFrom(p);
 		
 		g2.setColor(Color.black);
@@ -151,10 +162,11 @@ public class Display extends JFrame {
 			Point pt = p.passagePoints.get(i);
 			Point ptt = p.passagePoints.get(i + 1);
 			g2.drawLine((int)((pt.x + p.origin.x) * size), (int)((pt.y + p.origin.y) * size), (int)((ptt.x + p.origin.x) * size), (int)((ptt.y + p.origin.y) * size));
-			g2.fillOval(((int)((pt.x + p.origin.x) * size) - 2, ((int)((pt.y + p.origin.y) * size) - 2, 4, 4);
+			g2.fillOval(((int)((pt.x + p.origin.x) * size) - 2), ((int)((pt.y + p.origin.y) * size) - 2), 4, 4);
 		}
+		
 		int n = p.passagePoints.size()-1;
-		g2.fillOval((int)((p.passagePoints[n].x + p.origin.x) * size) - 2, (int)((p.passagePoints[n].y + p.origin.y) * size) - 2, 4, 4);
+		g2.fillOval((int)((p.passagePoints.get(n).x + p.origin.x) * size) - 2, (int)((p.passagePoints.get(n).y + p.origin.y) * size) - 2, 4, 4);
 	}
 
 }
