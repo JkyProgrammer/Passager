@@ -161,12 +161,12 @@ public class Display extends JFrame {
 		for (int i = 0; i < p.passagePoints.size()-1; i++) {
 			Point pt = p.passagePoints.get(i);
 			Point ptt = p.passagePoints.get(i + 1);
-			g2.drawLine((int)((pt.x + p.origin.x) * size), (int)((pt.y + p.origin.y) * size), (int)((ptt.x + p.origin.x) * size), (int)((ptt.y + p.origin.y) * size));
-			g2.fillOval(((int)((pt.x + p.origin.x) * size) - 2), ((int)((pt.y + p.origin.y) * size) - 2), 4, 4);
+			g2.drawLine((int)(pt.x * size), (int)(pt.y * size), (int)(ptt.x * size), (int)(ptt.y * size));
+			g2.fillOval(((int)(pt.x * size) - 2), ((int)(pt.y * size) - 2), 4, 4);
 		}
 		
 		int n = p.passagePoints.size()-1;
-		g2.fillOval((int)((p.passagePoints.get(n).x + p.origin.x) * size) - 2, (int)((p.passagePoints.get(n).y + p.origin.y) * size) - 2, 4, 4);
+		g2.fillOval((int)(p.passagePoints.get(n).x * size) - 2, (int)(p.passagePoints.get(n).y * size) - 2, 4, 4);
 	}
 
 }

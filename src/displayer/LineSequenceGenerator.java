@@ -16,17 +16,42 @@ public class LineSequenceGenerator {
 			if (d.x == p.passagePoints.get(p.passagePoints.size()-1).x) {
 				ArrayList<Point> door = new ArrayList<Point> ();
 				
-				door.add(new Point (p.origin.x + d.x - 1, p.origin.y + d.y - 2));
-			} else if (d.x == p.passagePoints.get(0).x) {
+				door.add(new Point (d.x - 1, d.y - 1));
+				door.add(new Point (d.x, d.y - 1));
 				
+				returnee.add(door);
+				
+				ArrayList<Point> door1 = new ArrayList<Point> ();
+				
+				door1.add(new Point ((float)(d.x - 0.5), (float)(d.y - 1.5)));
+				door1.add(new Point (d.x, d.y - 1));
+				door1.add(new Point ((float)(d.x - 0.5), (float)(d.y - 0.5)));
+				
+				returnee.add(door1);
+				
+			} else if (d.x == p.passagePoints.get(0).x) {
+				ArrayList<Point> door = new ArrayList<Point> ();
+				
+				door.add(new Point (d.x + 1, d.y - 1));
+				door.add(new Point (d.x, d.y - 1));
+				
+				returnee.add(door);
+				
+				ArrayList<Point> door1 = new ArrayList<Point> ();
+				
+				door1.add(new Point ((float)(d.x + 0.5), (float)(d.y - 1.5)));
+				door1.add(new Point (d.x, d.y - 1));
+				door1.add(new Point ((float)(d.x + 0.5), (float)(d.y - 0.5)));
+				
+				returnee.add(door1);
 			} else {
 				ArrayList<Point> door = new ArrayList<Point> ();
 			
-				door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
-				door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y - 2));
-				door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y));
-				door.add(new Point (p.origin.x + d.x, p.origin.y + d.y));
-				door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
+				door.add(new Point (d.x, d.y - 2));
+				door.add(new Point (d.x + 1, d.y - 2));
+				door.add(new Point (d.x + 1, d.y));
+				door.add(new Point (d.x, d.y));
+				door.add(new Point (d.x, d.y - 2));
 			
 				returnee.add(door);
 			}
@@ -66,7 +91,7 @@ public class LineSequenceGenerator {
 				}
 			}
 			
-			topSeq.add(new Point (p.origin.x + pas.x + offset, p.origin.y + pas.y - 3));
+			topSeq.add(new Point (pas.x + offset, pas.y - 3));
 		}
 		
 		returnee.add(topSeq);
@@ -85,21 +110,21 @@ public class LineSequenceGenerator {
 						for (int i = 0,j = 0; i <= dif*2; i++) {
 							j = i + 1;
 							if (i == dif*2) j = i;
-							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y - ((float)i / 2)));
-							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y - ((float)j / 2)));
+							bottomSeq.add(new Point (pas.x + ((float)i / 2), pas.y - ((float)i / 2)));
+							bottomSeq.add(new Point (pas.x + ((float)i / 2), pas.y - ((float)j / 2)));
 						}
 					} else {
 						for (int i = 0,j = 0; i <= Math.abs(dif)*2; i++) {
 							if (i > 0) j = i-1;
-							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y + ((float)j / 2)));
-							bottomSeq.add(new Point (p.origin.x + pas.x + ((float)i / 2), p.origin.y + pas.y + ((float)i / 2)));
+							bottomSeq.add(new Point (pas.x + ((float)i / 2), pas.y + ((float)j / 2)));
+							bottomSeq.add(new Point (pas.x + ((float)i / 2), pas.y + ((float)i / 2)));
 						}
 					}
 				} else {
-					bottomSeq.add(new Point (p.origin.x + pas.x, p.origin.y + pas.y));
+					bottomSeq.add(new Point (pas.x, pas.y));
 				}
 			} else {
-				bottomSeq.add(new Point (p.origin.x + pas.x, p.origin.y + pas.y));
+				bottomSeq.add(new Point (pas.x, pas.y));
 			}
 			
 			
@@ -111,8 +136,8 @@ public class LineSequenceGenerator {
 		if (p.closedLeft) {
 			ArrayList<Point> leftSeq = new ArrayList<Point> ();
 			
-			leftSeq.add(new Point (p.origin.x + p.passagePoints.get(0).x, p.origin.y + p.passagePoints.get(0).y - 3));
-			leftSeq.add(new Point (p.origin.x + p.passagePoints.get(0).x, p.origin.y + p.passagePoints.get(0).y));
+			leftSeq.add(new Point (p.passagePoints.get(0).x, p.passagePoints.get(0).y - 3));
+			leftSeq.add(new Point (p.passagePoints.get(0).x, p.passagePoints.get(0).y));
 			
 			returnee.add(leftSeq);
 		}
@@ -123,8 +148,8 @@ public class LineSequenceGenerator {
 			
 			int lastInd = p.passagePoints.size()-1;
 			
-			rightSeq.add(new Point (p.origin.x + p.passagePoints.get(lastInd).x, p.origin.y + p.passagePoints.get(lastInd).y - 3));
-			rightSeq.add(new Point (p.origin.x + p.passagePoints.get(lastInd).x, p.origin.y + p.passagePoints.get(lastInd).y));
+			rightSeq.add(new Point (p.passagePoints.get(lastInd).x, p.passagePoints.get(lastInd).y - 3));
+			rightSeq.add(new Point (p.passagePoints.get(lastInd).x, p.passagePoints.get(lastInd).y));
 			
 			returnee.add(rightSeq);
 		}

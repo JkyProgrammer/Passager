@@ -3,7 +3,7 @@ package main;
 import java.util.ArrayList;
 
 public class Passage {
-	public Point origin = new Point (0, 0);
+	//public Point origin = new Point (0, 0);
 	public ArrayList<Point> doors = new ArrayList<Point>();
 	public ArrayList<Point> passagePoints = new ArrayList<Point>();
 	
@@ -36,7 +36,7 @@ public class Passage {
 		Passage dup = new Passage ();
 		dup.closedLeft = closedLeft;
 		dup.closedRight = closedRight;
-		dup.origin = origin.duplicate();
+		//dup.origin = origin.duplicate();
 		dup.doors = cloneArray (doors);
 		dup.passagePoints = cloneArray (passagePoints);
 		
