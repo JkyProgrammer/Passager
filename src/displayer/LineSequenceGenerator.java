@@ -13,15 +13,23 @@ public class LineSequenceGenerator {
 		
 		// Make the doors
 		for (Point d : p.doors) {
-			ArrayList<Point> door = new ArrayList<Point> ();
+			if (d.x == p.passagePoints.get(p.passagePoints.size()-1).x) {
+				ArrayList<Point> door = new ArrayList<Point> ();
+				
+				door.add(new Point (p.origin.x + d.x - 1, p.origin.y + d.y - 2));
+			} else if (d.x == p.passagePoints.get(0).x) {
+				
+			} else {
+				ArrayList<Point> door = new ArrayList<Point> ();
 			
-			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
-			door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y - 2));
-			door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y));
-			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y));
-			door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
+				door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
+				door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y - 2));
+				door.add(new Point (p.origin.x + d.x + 1, p.origin.y + d.y));
+				door.add(new Point (p.origin.x + d.x, p.origin.y + d.y));
+				door.add(new Point (p.origin.x + d.x, p.origin.y + d.y - 2));
 			
-			returnee.add(door);
+				returnee.add(door);
+			}
 		}
 		
 		int pl = p.passagePoints.size();
