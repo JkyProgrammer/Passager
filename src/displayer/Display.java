@@ -119,14 +119,14 @@ public class Display extends JFrame {
 			}
 		}
 		
-		paintPassage (editingPassage, g2);
+		paintPassage (editingPassage, g2, true);
 		for (Passage p : passages) {
-			paintPassage (p, g2);
+			paintPassage (p, g2, false);
 		}
 		
 	}
 	
-	public void paintPassage (Passage p, Graphics2D g2) {
+	public void paintPassage (Passage p, Graphics2D g2, boolean debug) {
 		ArrayList<ArrayList<Point>> drawable = LineSequenceGenerator.makeAbsoluteLinesFrom(p);
 		
 		g2.setColor(Color.black);
@@ -137,14 +137,18 @@ public class Display extends JFrame {
 				g2.drawLine((int)(arr.get(i).x * size), (int)(arr.get(i).y * size), (int)(arr.get(m).x * size), (int)(arr.get(m).y * size));
 			}
 		}
-		
+		if (!debug) return;
+
 		g2.setColor(Color.red);
 		g2.setStroke(new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 		for (int i = 0; i < p.passagePoints.size()-1; i++) {
 			Point pt = p.passagePoints.get(i);
 			Point ptt = p.passagePoints.get(i + 1);
 			g2.drawLine((int)((pt.x + p.origin.x) * size), (int)((pt.y + p.origin.y) * size), (int)((ptt.x + p.origin.x) * size), (int)((ptt.y + p.origin.y) * size));
+			g2.fillOval(((int)((pt.x + p.origin.x) * size) - 2, ((int)((pt.y + p.origin.y) * size) - 2, 4, 4);
 		}
+		int n = p.passagePoints.size()-1;
+		g2.fillOval((int)((p.passagePoints[n].x + p.origin.x) * size) - 2, (int)((p.passagePoints[n].y + p.origin.y) * size) - 2, 4, 4);
 	}
 
 }
