@@ -90,6 +90,12 @@ public class Display extends JFrame {
 				if (e.getKeyChar() == KeyEvent.VK_ENTER)
 					passages.add (editingPassage.duplicate());
 					editingPassage = new Passage ();
+				if (e.getKeyChar () == ‘[‘) {
+					if (editingIndex > 0) editingIndex -= 1;
+				}
+				if (e.getKeyChar () == ‘]‘) {
+					if (editingIndex < passages.size()-1) editingIndex += 1;
+				}
 				repaint ();
 			}
 		});
@@ -101,6 +107,7 @@ public class Display extends JFrame {
 	}
 	
 	int size = 20;
+	int editingIndex = 0;
 	
 	ArrayList<Passage> passages = new ArrayList<Passage> ();
 	Passage editingPassage = new Passage ();
