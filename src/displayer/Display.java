@@ -32,6 +32,7 @@ public class Display extends JFrame {
 	Point mousePos = new Point (0,0);
 	
 	public void setup () {
+		passages.add (new Passage());
 		getContentPane().addMouseMotionListener(new MouseMotionListener () {
 			@Override
 			public void mouseDragged(MouseEvent e) {}
@@ -55,9 +56,9 @@ public class Display extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e))
-					editingPassage.appendPassagePoint(new Point (mousePos.x, mousePos.y));
+					passages[editingIndex].appendPassagePoint(new Point (mousePos.x, mousePos.y));
 				if (SwingUtilities.isRightMouseButton(e))
-					editingPassage.addDoor(new Point (mousePos.x, mousePos.y));
+					passages[editingIndex].addDoor(new Point (mousePos.x, mousePos.y));
 				repaint();
 			}
 
@@ -85,11 +86,11 @@ public class Display extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-					if (editingPassage.passagePoints.size() > 0)
-						editingPassage.passagePoints.remove(editingPassage.passagePoints.size()-1);
+					if (passages[editingIndex].passagePoints.size() > 0)
+						passages[editingIndex].passagePoints.remove(passages[editingIndex].passagePoints.size()-1);
 				if (e.getKeyChar() == KeyEvent.VK_ENTER)
-					passages.add (editingPassage.duplicate());
-					editingPassage = new Passage ();
+					passages.add (new Passage ());
+					editingIndex = passages.size()-1;
 				if (e.getKeyChar () == ‘[‘) {
 					if (editingIndex > 0) editingIndex -= 1;
 				}
@@ -110,7 +111,6 @@ public class Display extends JFrame {
 	int editingIndex = 0;
 	
 	ArrayList<Passage> passages = new ArrayList<Passage> ();
-	Passage editingPassage = new Passage ();
 	
 	@Override
 	public void paint (Graphics g) {
@@ -126,7 +126,6 @@ public class Display extends JFrame {
 			}
 		}
 		
-		paintPassage (editingPassage, g2, true);
 		for (Passage p : passages) {
 			paintPassage (p, g2, false);
 		}
