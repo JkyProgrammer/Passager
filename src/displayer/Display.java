@@ -66,7 +66,7 @@ public class Display extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (SwingUtilities.isLeftMouseButton(e))
+				if (SwingUtilities.isLeftMouseButton(e) && mousePos.x >= (passages.get(editingIndex).passages.get(passages.get(editingIndex).passages.size()-1).x)
 					passages.get(editingIndex).appendPassagePoint(new Point (mousePos.x, mousePos.y));
 				if (SwingUtilities.isRightMouseButton(e))
 					passages.get(editingIndex).addDoor(new Point (mousePos.x, mousePos.y));
@@ -141,6 +141,26 @@ public class Display extends JFrame {
 	}
 	
 	// TODO: Passage repacker
+	public void repackPassages () {
+		// Remove empty passages
+		int x = 0;
+		while (x < passages.size()) {
+			if (passages.get(x).passagePoints.size() < 2) passages.remove(x);
+			else x++;
+		}
+		
+		// Kill disconnected doors
+		for (Passage p : passages) {
+			Bounds b = p.getBounds();
+			int d = 0;
+			while (d < p.doors.size()) {
+				if (!p.doors(d).contains (door)) p.doors.remove(d);
+				else d++;
+			}
+		}
+		
+		// Simplify passages 
+	}
 
 	public void setupMenus () {
 		JMenuBar mb = new JMenuBar ();

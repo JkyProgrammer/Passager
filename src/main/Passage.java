@@ -40,4 +40,14 @@ public class Passage {
 		
 		return dup;
 	}
+	
+	public Bounds getBounds () {
+		Bounds b = new Bounds (0, 0, 0, 0);
+		b.x = passagePoints.get(0).x;
+		b.y = passagePoints.get(0).y;
+		
+		int l = passagePoints.size();
+		b.width = passagePoints.get(l-1).x - b.x;
+		b.height = passagePoints.get(l-1).y - b.y;
+	}
 }
