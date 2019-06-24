@@ -31,6 +31,10 @@ public class Passage {
 		return newArr;
 	}
 	
+	// TODO: Ladders
+	// TODO: Custom decorations
+	// TODO: Rooms
+	
 	public Passage duplicate () {
 		Passage dup = new Passage ();
 		dup.closedLeft = closedLeft;

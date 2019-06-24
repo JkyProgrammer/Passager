@@ -148,7 +148,6 @@ public class Display extends JFrame {
 		
 	}
 	
-	// TODO: Passage repacker
 	public void repackPassages () {
 		// Remove empty passages
 		int x = 0;
@@ -168,8 +167,19 @@ public class Display extends JFrame {
 			}
 		}
 		
-		// Simplify passages 
-		
+		// Simplify passages
+		for (Passage p : passages) {
+			int l = 0;
+			while (l < p.passagePoints.size()-2) {
+				Point p1 = p.passagePoints.get(l);
+				Point p2 = p.passagePoints.get(l+1);
+				Point p3 = p.passagePoints.get(l+2);
+				
+				if (p1.y == p2.y && p2.y == p3.y) p.passagePoints.remove(p2);
+				else if ((p1.y-p2.y)/(p1.x-p2.x) == (p2.y-p3.y)/(p2.x-p3.x)) p.passagePoints.remove (p2);
+				else l++;
+			}
+		}
 		
 		if (passages.size() < 1) passages.add(new Passage ());
 		editingIndex = 0;
@@ -255,6 +265,7 @@ public class Display extends JFrame {
 		repaint ();
 	}
 	
+	// TODO: Scrolling
 	
 	String filePath = null;
 	
