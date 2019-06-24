@@ -66,11 +66,19 @@ public class Display extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (SwingUtilities.isLeftMouseButton(e) && mousePos.x >= (passages.get(editingIndex).passages.get(passages.get(editingIndex).passages.size()-1).x)
-					passages.get(editingIndex).appendPassagePoint(new Point (mousePos.x, mousePos.y));
-				if (SwingUtilities.isRightMouseButton(e))
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					Passage p = passages.get(editingIndex);
+					if (p.passagePoints.size() < 1 || mousePos.x >= (p.passagePoints.get(p.passagePoints.size()-1).x)) {
+						passages.get(editingIndex).appendPassagePoint(new Point (mousePos.x, mousePos.y));
+						repaint();
+					}
+				}
+					
+				if (SwingUtilities.isRightMouseButton(e)) {
 					passages.get(editingIndex).addDoor(new Point (mousePos.x, mousePos.y));
-				repaint();
+					repaint();
+				}
+				
 			}
 
 			@Override
@@ -152,14 +160,21 @@ public class Display extends JFrame {
 		// Kill disconnected doors
 		for (Passage p : passages) {
 			Bounds b = p.getBounds();
+			System.out.println(b);
 			int d = 0;
 			while (d < p.doors.size()) {
-				if (!p.doors(d).contains (door)) p.doors.remove(d);
+				if (!b.contains (p.doors.get(d))) p.doors.remove(d);
 				else d++;
 			}
 		}
 		
 		// Simplify passages 
+		
+		
+		if (passages.size() < 1) passages.add(new Passage ());
+		editingIndex = 0;
+		
+		repaint ();
 	}
 
 	public void setupMenus () {
@@ -194,6 +209,15 @@ public class Display extends JFrame {
 		});
 		fileMenu.add(openButton);
 		
+		JMenuItem cleanupButton = new JMenuItem ("Clean up");
+		cleanupButton.addActionListener(new ActionListener () {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				repackPassages();
+			}
+		});
+		toolsMenu.add(cleanupButton);
+		
 		mousePosLabel = new JMenuItem (mousePos.toString());
 		
 		
@@ -205,6 +229,7 @@ public class Display extends JFrame {
 	}
 	
 	public void save (boolean as) {
+		repackPassages();
 		if (filePath == null || as) {
 			JFileChooser chooser = new JFileChooser ();
 			chooser.setFileFilter(new TextFilter ());
@@ -253,14 +278,10 @@ public class Display extends JFrame {
 			System.out.println("Starting full repaint");
 			g2.setColor(Color.white);
 			
-			g2.fillRect(0, 40, getWidth(), getHeight());
+			int start = this.getJMenuBar().getHeight();
+			g2.fillRect(0, 0, getWidth(), getHeight());
 			
-			g2.setColor(Color.lightGray);
-			for (int i = 0; i < this.getWidth()/size; i++) {
-				for (int j = 0; j < this.getHeight()/size; j++) {
-					g2.fillOval((i*size) - 1, (j*size) - 1, 2, 2);
-				}
-			}
+			paintDots (g2, new Bounds (0, 0, getWidth()/size, getHeight()/size));
 			
 			for (int i = 0; i < passages.size(); i++) {
 				boolean x = false;
@@ -271,6 +292,21 @@ public class Display extends JFrame {
 			while (!paintQueue.isEmpty()) {
 				PassagePaintQueueItem it = paintQueue.remove(0);
 				paintPassage (it.passage, g2, it.wantsDebug, it.wantsNormal);
+			}
+		}
+		this.getJMenuBar().repaint();
+	}
+	
+	public void paintDots (Graphics2D g2, Bounds area) {
+		g2.setColor(Color.lightGray);
+		int x1 = (int) (Math.ceil(area.x) * 20);
+		int x2 = (int) (Math.floor(area.width) * 20) + x1;
+		int y1 = (int) (Math.ceil(area.y) * 20);
+		int y2 = (int) (Math.floor(area.height) * 20) + y1;
+		
+		for (int i = x1; i < x2/size; i++) {
+			for (int j = y1; j < y2/size; j++) {
+				g2.fillOval((i*size) - 1, (j*size) - 1, 2, 2);
 			}
 		}
 	}

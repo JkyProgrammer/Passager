@@ -43,11 +43,18 @@ public class Passage {
 	
 	public Bounds getBounds () {
 		Bounds b = new Bounds (0, 0, 0, 0);
-		b.x = passagePoints.get(0).x;
-		b.y = passagePoints.get(0).y;
+		b.x = (int) passagePoints.get(0).x;
+		b.y = (int) passagePoints.get(0).y - 3;
+		b.width = (int) passagePoints.get(passagePoints.size()-1).x - b.x;
+		b.height = (int) passagePoints.get(passagePoints.size()-1).y - b.y;
 		
-		int l = passagePoints.size();
-		b.width = passagePoints.get(l-1).x - b.x;
-		b.height = passagePoints.get(l-1).y - b.y;
+		for (Point p : passagePoints) {
+			if (p.y-3 < b.y) b.y = (int) (p.y-3);
+			if (p.y - b.y > b.height) b.height = (int) (p.y-b.y);
+		}
+		
+		
+		
+		return b;
 	}
 }
