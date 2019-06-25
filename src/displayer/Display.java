@@ -38,14 +38,19 @@ public class Display extends JFrame {
 	}
 	
 	Point mousePos = new Point (0,0);
+	int editingMode = 0; // 0 = Passage
+						 // 1 = Doors
+						 // 2 = Ladders
+						 // 3 = Decorations
+						 // 4 = Rooms
 	
 	JMenuItem mousePosLabel;
+	Point tmpLadderStartPos;
 	
 	public void setup () {
 		passages.add (new Passage());
 		getContentPane().addMouseMotionListener(new MouseMotionListener () {
-			@Override
-			public void mouseDragged(MouseEvent e) {}
+			@Override public void mouseDragged(MouseEvent e) {}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -53,45 +58,37 @@ public class Display extends JFrame {
 				int approxY = Math.round((float)e.getY() / (float)size);
 				mousePos.x = approxX;
 				mousePos.y = approxY+2;
-//				Graphics2D g2 = (Graphics2D)getContentPane().getGraphics();
-//				g2.setColor(Color.white);
-//				g2.fillRect(0, 0, 100, 11);
-//				g2.setColor(Color.black);
-//				g2.drawString(mousePos.toString(), 0, 10);
 				mousePosLabel.setText(mousePos.toString());
 			}
 		});
 		
 		getContentPane().addMouseListener(new MouseListener () {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (SwingUtilities.isLeftMouseButton(e)) {
+			@Override public void mouseClicked(MouseEvent e) {
+				if (editingMode == 0) {
 					Passage p = passages.get(editingIndex);
 					if (p.passagePoints.size() < 1 || mousePos.x >= (p.passagePoints.get(p.passagePoints.size()-1).x)) {
 						passages.get(editingIndex).appendPassagePoint(new Point (mousePos.x, mousePos.y));
 						repaint();
 					}
-				}
-					
-				if (SwingUtilities.isRightMouseButton(e)) {
+				} else if (editingMode == 1) {
 					passages.get(editingIndex).addDoor(new Point (mousePos.x, mousePos.y));
 					repaint();
 				}
 				
 			}
 
-			@Override
-			public void mousePressed(MouseEvent e) {}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {}
-
-			@Override
-			public void mouseExited(MouseEvent e) {}
+			@Override public void mousePressed(MouseEvent e) {
+				if (editingMode == 2) {
+					tmpLadderStartPos = mousePos.duplicate();
+				}
+			}
+			@Override public void mouseReleased(MouseEvent e) {
+				if (editingMode == 2) {
+					passages.get(editingIndex).addLadder (tmpLadderStartPos.duplicate(), (int) (mousePos.y-tmpLadderStartPos.y));
+				}
+			}
+			@Override public void mouseEntered(MouseEvent e) {}
+			@Override public void mouseExited(MouseEvent e) {}
 		});
 		
 		addKeyListener(new KeyListener () {
@@ -99,9 +96,21 @@ public class Display extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-					if (passages.get(editingIndex).passagePoints.size() > 0) {
-						passages.get(editingIndex).passagePoints.remove(passages.get(editingIndex).passagePoints.size()-1);
-						repaint ();
+					if (editingMode == 0) {
+						if (passages.get(editingIndex).passagePoints.size() > 0) {
+							passages.get(editingIndex).passagePoints.remove(passages.get(editingIndex).passagePoints.size()-1);
+							repaint ();
+						}
+					} else if (editingMode == 1) {
+						if (passages.get(editingIndex).doors.size() > 0) {
+							passages.get(editingIndex).doors.remove(passages.get(editingIndex).doors.size()-1);
+							repaint ();
+						}
+					} else if (editingMode == 2) {
+						if (passages.get(editingIndex).ladders.size() > 0) {
+							passages.get(editingIndex).ladders.remove(passages.get(editingIndex).ladders.size()-1);
+							repaint ();
+						}
 					}
 				}
 				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
@@ -144,8 +153,6 @@ public class Display extends JFrame {
 		
 		setVisible(true);
 		setSize(new Dimension (1000, 500));
-		
-		
 	}
 	
 	public void repackPassages () {
@@ -159,7 +166,6 @@ public class Display extends JFrame {
 		// Kill disconnected doors
 		for (Passage p : passages) {
 			Bounds b = p.getBounds();
-			System.out.println(b);
 			int d = 0;
 			while (d < p.doors.size()) {
 				if (!b.contains (p.doors.get(d))) p.doors.remove(d);
@@ -227,6 +233,29 @@ public class Display extends JFrame {
 			}
 		});
 		toolsMenu.add(cleanupButton);
+		
+		JMenu editingModeMenu = new JMenu ("Editing Mode");
+		toolsMenu.add(editingModeMenu);
+		
+		JMenuItem emPassages = new JMenuItem ("Passages");
+		emPassages.addActionListener(new ActionListener () { @Override public void actionPerformed(ActionEvent e) { editingMode = 0; } });
+		editingModeMenu.add(emPassages);
+		
+		JMenuItem emDoors = new JMenuItem ("Doors");
+		emDoors.addActionListener(new ActionListener () { @Override public void actionPerformed(ActionEvent e) { editingMode = 1; } });
+		editingModeMenu.add(emDoors);
+		
+		JMenuItem emLadders = new JMenuItem ("Ladders");
+		emLadders.addActionListener(new ActionListener () { @Override public void actionPerformed(ActionEvent e) { editingMode = 2; } });
+		editingModeMenu.add(emLadders);
+		
+		JMenuItem emDecorations = new JMenuItem ("Decorations");
+		emDecorations.addActionListener(new ActionListener () { @Override public void actionPerformed(ActionEvent e) { editingMode = 3; } });
+		editingModeMenu.add(emDecorations);
+		
+		JMenuItem emRooms = new JMenuItem ("Rooms");
+		emRooms.addActionListener(new ActionListener () { @Override public void actionPerformed(ActionEvent e) { editingMode = 4; } });
+		editingModeMenu.add(emRooms);
 		
 		mousePosLabel = new JMenuItem (mousePos.toString());
 		

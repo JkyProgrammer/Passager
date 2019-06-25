@@ -17,7 +17,14 @@ public class SaveOpenHandler {
 			for (Point point : p.doors) {
 				output += (point.x + " " + point.y + ",");
 			}
-			output = output.substring(0, output.length()-1);
+			if (p.doors.size() > 0)
+				output = output.substring(0, output.length()-1);
+			output += ":";
+			for (Ladder point : p.ladders) {
+				output += (point.origin.x + " " + point.origin.y + " " + point.length + ",");
+			}
+			if (p.ladders.size() > 0)
+				output = output.substring(0, output.length()-1);
 			output += ":";
 			output += p.closedLeft;
 			output += ":";
@@ -62,15 +69,26 @@ public class SaveOpenHandler {
 			String[] passagePoints = parts[0].split(",");
 			for (String passagePoint : passagePoints) p.appendPassagePoint(Point.fromString(passagePoint));
 			
-			String[] doorPoints = parts[1].split(",");
-			for (String doorPoint : doorPoints) p.addDoor(Point.fromString(doorPoint));
+			if (parts[1].length() > 0) {
+				String[] doorPoints = parts[1].split(",");
+				for (String doorPoint : doorPoints) p.addDoor(Point.fromString(doorPoint));
+			}
+			
+			if (parts[2].length() > 0) {
+				String[] ladders = parts[2].split(",");
+				for (String ladder : ladders) {
+					int sep = ladder.lastIndexOf(" ");
+					Point pnt = Point.fromString(ladder.substring(0, sep));
+					p.addLadder (pnt, Integer.parseInt(ladder.substring(sep+1)));
+				}
+			}
 			
 			try {
-				p.closedLeft = Boolean.parseBoolean(parts[2]);
+				p.closedLeft = Boolean.parseBoolean(parts[3]);
 			} catch (Exception e) {}
 			
 			try {
-				p.closedRight = Boolean.parseBoolean(parts[3]);
+				p.closedRight = Boolean.parseBoolean(parts[4]);
 			} catch (Exception e) {}
 			
 			output.add(p);

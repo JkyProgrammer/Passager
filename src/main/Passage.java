@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Passage {
 	public ArrayList<Point> doors = new ArrayList<Point>();
 	public ArrayList<Point> passagePoints = new ArrayList<Point>();
+	public ArrayList<Ladder> ladders = new ArrayList<Ladder> ();
 	
 	public boolean closedLeft = true;
 	public boolean closedRight = true;
@@ -60,5 +61,9 @@ public class Passage {
 		
 		
 		return b;
+	}
+
+	public void addLadder (Point point, int i) {
+		ladders.add(new Ladder (point, i));
 	}
 }
