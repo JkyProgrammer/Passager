@@ -161,8 +161,9 @@ public class Display extends JFrame {
 		// TODO: More tools!
 		setupMenus ();
 		
+		setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+		setSize(new Dimension (500, 500));
 		setVisible(true);
-		setSize(new Dimension (1000, 500));
 	}
 	
 	public void repackPassages () {
