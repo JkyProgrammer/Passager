@@ -8,4 +8,8 @@ public class Ladder {
 		origin = o;
 		length = l;
 	}
+	
+	public String toString () {
+		return origin.toString() + ", " + length;
+	}
 }

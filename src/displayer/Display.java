@@ -50,7 +50,13 @@ public class Display extends JFrame {
 	public void setup () {
 		passages.add (new Passage());
 		getContentPane().addMouseMotionListener(new MouseMotionListener () {
-			@Override public void mouseDragged(MouseEvent e) {}
+			@Override public void mouseDragged(MouseEvent e) {
+				int approxX = Math.round((float)e.getX() / (float)size);
+				int approxY = Math.round((float)e.getY() / (float)size);
+				mousePos.x = approxX;
+				mousePos.y = approxY+2;
+				mousePosLabel.setText(mousePos.toString());
+			}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -79,12 +85,13 @@ public class Display extends JFrame {
 
 			@Override public void mousePressed(MouseEvent e) {
 				if (editingMode == 2) {
-					tmpLadderStartPos = mousePos.duplicate();
+					tmpLadderStartPos = new Point (mousePos.x, mousePos.y);
 				}
 			}
 			@Override public void mouseReleased(MouseEvent e) {
 				if (editingMode == 2) {
 					passages.get(editingIndex).addLadder (tmpLadderStartPos.duplicate(), (int) (mousePos.y-tmpLadderStartPos.y));
+					repaint ();
 				}
 			}
 			@Override public void mouseEntered(MouseEvent e) {}
@@ -92,7 +99,7 @@ public class Display extends JFrame {
 		});
 		
 		addKeyListener(new KeyListener () {
-
+			// TODO: Proper deleting for different elements
 			@Override
 			public void keyTyped(KeyEvent e) {
 				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
@@ -334,6 +341,7 @@ public class Display extends JFrame {
 				paintPassage (it.passage, g2, it.wantsDebug, it.wantsNormal);
 			}
 		}
+		paintLadders (g2);
 		this.getJMenuBar().repaint();
 	}
 	
@@ -347,6 +355,25 @@ public class Display extends JFrame {
 		for (int i = x1; i < x2/size; i++) {
 			for (int j = y1; j < y2/size; j++) {
 				g2.fillOval((i*size) - 1, (j*size) - 1, 2, 2);
+			}
+		}
+	}
+	
+	public void paintLadders (Graphics2D g2) {
+		g2.setColor(Color.black);
+		g2.setStroke(new BasicStroke (5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		for (Passage pas : passages) {
+			if (pas.ladders.size() < 1) continue;
+			for (Ladder lad : pas.ladders) {
+				if (lad.length < 1) continue;
+				g2.setColor(Color.white);
+				g2.fillRect((int)lad.origin.x * size, (int)lad.origin.y * size, size, lad.length * size);
+				g2.setColor(Color.black);
+				g2.drawRect((int)lad.origin.x * size, (int)lad.origin.y * size, size, lad.length * size);
+				
+				for (float i = 0.5f; i < lad.length; i+= 0.5) {
+					g2.drawLine((int)((lad.origin.x + 0.3) * size), (int)((lad.origin.y + i) * size), (int)((lad.origin.x + 0.7) * size), (int)((lad.origin.y + i) * size));
+				}
 			}
 		}
 	}
