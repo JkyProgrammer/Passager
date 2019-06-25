@@ -1,9 +1,14 @@
-package main;
+package file;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.nio.file.*;
-import java.io.*;
+
+import main.Ladder;
+import main.Passage;
+import main.Point;
 
 public class SaveOpenHandler {
 	public static String convertToText (ArrayList<Passage> arr) {

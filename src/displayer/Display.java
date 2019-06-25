@@ -1,7 +1,5 @@
 package displayer;
 
-import main.*;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,8 +20,13 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileFilter;
+
+import file.SaveOpenHandler;
+import file.TextFilter;
+import main.Bounds;
+import main.Ladder;
+import main.Passage;
+import main.Point;
 
 public class Display extends JFrame {
 
@@ -278,6 +281,7 @@ public class Display extends JFrame {
 		repackPassages();
 		if (filePath == null || as) {
 			JFileChooser chooser = new JFileChooser ();
+			// TODO: Fix filtering
 			chooser.setFileFilter(new TextFilter ());
 			chooser.showSaveDialog(this);
 			File f = chooser.getSelectedFile();
@@ -325,7 +329,6 @@ public class Display extends JFrame {
 			System.out.println("Starting full repaint");
 			g2.setColor(Color.white);
 			
-			int start = this.getJMenuBar().getHeight();
 			g2.fillRect(0, 0, getWidth(), getHeight());
 			
 			paintDots (g2, new Bounds (0, 0, getWidth()/size, getHeight()/size));

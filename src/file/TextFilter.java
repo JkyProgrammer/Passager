@@ -1,6 +1,5 @@
-package main;
+package file;
 
-import java.awt.List;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -32,7 +32,6 @@ public class Passage {
 		return newArr;
 	}
 	
-	// TODO: Ladders
 	// TODO: Custom decorations
 	// TODO: Rooms
 	
