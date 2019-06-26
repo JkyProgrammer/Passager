@@ -10,16 +10,14 @@ public class Passage {
 	public boolean closedLeft = true;
 	public boolean closedRight = true;
 	
-	public void appendPassagePoint (Point element, int place) {
-	    passagePoints.add(place, element);
-	}
-	
 	public void appendPassagePoint (Point element) {
-	    passagePoints.add(element);
+		if (!passagePoints.contains(element))
+			passagePoints.add(element);
 	}
 	
 	public void addDoor (Point p) {
-		doors.add (p);
+		if (!passagePoints.contains(p))
+			doors.add (p);
 	}
 	
 	private ArrayList<Point> cloneArray (ArrayList<Point> pts) {
@@ -67,14 +65,23 @@ public class Passage {
 	}
 	
 	public void removeLadder (Point p) {
-		ladders.remove (p);
+		for (int i = 0; i < ladders.size(); i++) {
+			Point pnt = ladders.get(i).origin;
+			if (pnt.equals(p)) ladders.remove (i);
+		}
 	}
 	
 	public void removePassagePoint (Point p) {
-		passagePoints.remove (p);
+		for (int i = 0; i < passagePoints.size(); i++) {
+			Point pnt = passagePoints.get(i);
+			if (pnt.equals(p)) passagePoints.remove (i);
+		}
 	}
 	
 	public void removeDoor (Point p) {
-		doors.remove (p);
+		for (int i = 0; i < doors.size(); i++) {
+			Point pnt = doors.get(i);
+			if (pnt.equals(p)) doors.remove (i);
+		}
 	}
 }

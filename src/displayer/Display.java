@@ -51,24 +51,23 @@ public class Display extends JFrame {
 	JMenuItem mousePosLabel;
 	Point tmpLadderStartPos;
 	
+	String filePath = null;
+	
+	int size = 20;
+	int editingIndex = 0;
+	
+	Point scrollOffset = new Point (0, 0);
+	
 	public void setup () {
 		passages.add (new Passage());
 		getContentPane().addMouseMotionListener(new MouseMotionListener () {
 			@Override public void mouseDragged(MouseEvent e) {
-				int approxX = Math.round((float)e.getX() / (float)size);
-				int approxY = Math.round((float)e.getY() / (float)size);
-				mousePos.x = approxX;
-				mousePos.y = approxY+2;
-				mousePosLabel.setText(mousePos.toString());
+				updateMousePosition();
 			}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				int approxX = Math.round((float)e.getX() / (float)size);
-				int approxY = Math.round((float)e.getY() / (float)size);
-				mousePos.x = approxX;
-				mousePos.y = approxY+2;
-				mousePosLabel.setText(mousePos.toString());
+				updateMousePosition();
 			}
 		});
 		
@@ -114,7 +113,6 @@ public class Display extends JFrame {
 		});
 		
 		addKeyListener(new KeyListener () {
-			// TODO: Proper deleting for different elements
 			@Override
 			public void keyTyped(KeyEvent e) {
 				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
@@ -145,7 +143,14 @@ public class Display extends JFrame {
 			}
 
 			@Override
-			public void keyPressed(KeyEvent e) {}
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_RIGHT) scrollOffset.x -= 1;
+				if (e.getKeyCode() == KeyEvent.VK_LEFT) scrollOffset.x += 1;
+				if (e.getKeyCode() == KeyEvent.VK_UP) scrollOffset.y += 1;
+				if (e.getKeyCode() == KeyEvent.VK_DOWN) scrollOffset.y -= 1;
+				repaint ();
+				updateMousePosition ();
+			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {}
@@ -194,8 +199,6 @@ public class Display extends JFrame {
 		
 		if (passages.size() < 1) passages.add(new Passage ());
 		editingIndex = 0;
-		
-		// TODO: Remove duplicate doors/ladders/passagePoints
 		
 		repaint ();
 	}
@@ -301,14 +304,7 @@ public class Display extends JFrame {
 		setTitle (filePath);
 		repaint ();
 	}
-	
-	// TODO: Scrolling
-	
-	String filePath = null;
-	
-	int size = 20;
-	int editingIndex = 0;
-		
+			
 	ArrayList<Passage> passages = new ArrayList<Passage> ();
 	ArrayList<PassagePaintQueueItem> paintQueue = new ArrayList<PassagePaintQueueItem> ();
 	
@@ -367,12 +363,12 @@ public class Display extends JFrame {
 			for (Ladder lad : pas.ladders) {
 				if (lad.length < 1) continue;
 				g2.setColor(Color.white);
-				g2.fillRect((int)lad.origin.x * size, (int)lad.origin.y * size, size, lad.length * size);
+				g2.fillRect((int)(lad.origin.x + scrollOffset.x) * size, (int)(lad.origin.y + scrollOffset.y) * size, size, lad.length * size);
 				g2.setColor(Color.black);
-				g2.drawRect((int)lad.origin.x * size, (int)lad.origin.y * size, size, lad.length * size);
+				g2.drawRect((int)(lad.origin.x + scrollOffset.x) * size, (int)(lad.origin.y + scrollOffset.y) * size, size, lad.length * size);
 				
 				for (float i = 0.5f; i < lad.length; i+= 0.5) {
-					g2.drawLine((int)((lad.origin.x + 0.3) * size), (int)((lad.origin.y + i) * size), (int)((lad.origin.x + 0.7) * size), (int)((lad.origin.y + i) * size));
+					g2.drawLine((int)((lad.origin.x + scrollOffset.x + 0.3) * size), (int)((lad.origin.y + scrollOffset.y + i) * size), (int)((lad.origin.x + scrollOffset.x + 0.7) * size), (int)((lad.origin.y + scrollOffset.y + i) * size));
 				}
 			}
 		}
@@ -389,7 +385,7 @@ public class Display extends JFrame {
 			for (ArrayList<Point> arr : drawable) {
 				for (int i = 0; i < arr.size()-1; i++) {
 					int m = i + 1;
-					g2.drawLine((int)(arr.get(i).x * size), (int)(arr.get(i).y * size), (int)(arr.get(m).x * size), (int)(arr.get(m).y * size));
+					g2.drawLine((int)((arr.get(i).x + scrollOffset.x) * size), (int)((arr.get(i).y + scrollOffset.y) * size), (int)((arr.get(m).x + scrollOffset.x) * size), (int)((arr.get(m).y + scrollOffset.y) * size));
 				}
 			}
 		}
@@ -401,12 +397,21 @@ public class Display extends JFrame {
 		for (int i = 0; i < p.passagePoints.size()-1; i++) {
 			Point pt = p.passagePoints.get(i);
 			Point ptt = p.passagePoints.get(i + 1);
-			g2.drawLine((int)(pt.x * size), (int)(pt.y * size), (int)(ptt.x * size), (int)(ptt.y * size));
-			g2.fillOval(((int)(pt.x * size) - 2), ((int)(pt.y * size) - 2), 4, 4);
+			g2.drawLine((int)((pt.x + scrollOffset.x) * size), (int)((pt.y + scrollOffset.y) * size), (int)((ptt.x + scrollOffset.x) * size), (int)((ptt.y + scrollOffset.y) * size));
+			g2.fillOval(((int)((pt.x + scrollOffset.x) * size) - 2), ((int)((pt.y + scrollOffset.y) * size) - 2), 4, 4);
 		}
 		
 		int n = p.passagePoints.size()-1;
-		g2.fillOval((int)(p.passagePoints.get(n).x * size) - 2, (int)(p.passagePoints.get(n).y * size) - 2, 4, 4);
+		g2.fillOval((int)((p.passagePoints.get(n).x + scrollOffset.x) * size) - 2, (int)((p.passagePoints.get(n).y + scrollOffset.y) * size) - 2, 4, 4);
+	}
+
+	public void updateMousePosition() {
+		java.awt.Point e = this.getMousePosition();
+		int approxX = Math.round((float)e.getX() / (float)size);
+		int approxY = Math.round((float)e.getY() / (float)size);
+		mousePos.x = approxX - scrollOffset.x;
+		mousePos.y = approxY - scrollOffset.y;
+		mousePosLabel.setText(mousePos.toString());
 	}
 
 }

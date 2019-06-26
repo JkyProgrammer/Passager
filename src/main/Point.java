@@ -36,8 +36,12 @@ public class Point {
 		return p;
 	}
 	
-	public boolean equals (Point anObject) {
-		if (anObject.x == x && anObject.y == y) return true;
+	@Override
+	public boolean equals (Object anObject) {
+		if (anObject == null) return false;
+		if (this.getClass() != anObject.getClass()) return false;
+		Point ob = (Point) anObject;
+		if (ob.x == x && ob.y == y) return true;
 		return false;
 	}
 }
