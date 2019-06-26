@@ -35,4 +35,9 @@ public class Point {
 		
 		return p;
 	}
+	
+	public boolean equals (Point anObject) {
+		if (anObject.x == x && anObject.y == y) return true;
+		return false;
+	}
 }

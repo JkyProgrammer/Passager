@@ -201,6 +201,8 @@ public class Display extends JFrame {
 		if (passages.size() < 1) passages.add(new Passage ());
 		editingIndex = 0;
 		
+		// TODO: Remove duplicate doors/ladders/passagePoints
+		
 		repaint ();
 	}
 

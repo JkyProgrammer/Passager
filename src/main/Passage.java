@@ -65,4 +65,16 @@ public class Passage {
 	public void addLadder (Point point, int i) {
 		ladders.add(new Ladder (point, i));
 	}
+	
+	public void removeLadder (Point p) {
+		ladders.remove (p);
+	}
+	
+	public void removePassagePoint (Point p) {
+		passagePoints.remove (p);
+	}
+	
+	public void removeDoor (Point p) {
+		doors.remove (p);
+	}
 }
