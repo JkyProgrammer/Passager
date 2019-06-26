@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import file.SaveOpenHandler;
 import file.TextFilter;
@@ -73,6 +74,7 @@ public class Display extends JFrame {
 		
 		getContentPane().addMouseListener(new MouseListener () {
 			@Override public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
 				if (editingMode == 0) {
 					Passage p = passages.get(editingIndex);
 					if (p.passagePoints.size() < 1 || mousePos.x >= (p.passagePoints.get(p.passagePoints.size()-1).x)) {
@@ -82,6 +84,16 @@ public class Display extends JFrame {
 				} else if (editingMode == 1) {
 					passages.get(editingIndex).addDoor(new Point (mousePos.x, mousePos.y));
 					repaint();
+				}
+				} else if (SwingUtilities.isRightMouseButton(e)) {
+					if (editingMode == 0) {
+						passages.get(editingIndex).removePassagePoint(mousePos);
+					} else if (editingMode == 1) {
+						passages.get(editingIndex).removeDoor(mousePos);
+					} else if (editingMode == 2) {
+						passages.get(editingIndex).removeLadder(mousePos);
+					}
+					repaint ();
 				}
 				
 			}
@@ -105,24 +117,6 @@ public class Display extends JFrame {
 			// TODO: Proper deleting for different elements
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-					if (editingMode == 0) {
-						if (passages.get(editingIndex).passagePoints.size() > 0) {
-							passages.get(editingIndex).passagePoints.remove(passages.get(editingIndex).passagePoints.size()-1);
-							repaint ();
-						}
-					} else if (editingMode == 1) {
-						if (passages.get(editingIndex).doors.size() > 0) {
-							passages.get(editingIndex).doors.remove(passages.get(editingIndex).doors.size()-1);
-							repaint ();
-						}
-					} else if (editingMode == 2) {
-						if (passages.get(editingIndex).ladders.size() > 0) {
-							passages.get(editingIndex).ladders.remove(passages.get(editingIndex).ladders.size()-1);
-							repaint ();
-						}
-					}
-				}
 				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 					passages.add (new Passage ());
 					doPaintPassage (passages.get(editingIndex), false, true);
