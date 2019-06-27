@@ -14,6 +14,7 @@ public class TextFilter extends FileFilter {
 	public boolean accept(File f) {
 		String[] parts = f.getName().split(".");
 		if (parts.length == 0) return true;
+		System.out.println(parts);
 		if (allowedEndings.contains (parts[parts.length-1])) {
 			return true;
 		}

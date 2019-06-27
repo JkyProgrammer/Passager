@@ -14,22 +14,29 @@ public class SaveOpenHandler {
 	public static String convertToText (ArrayList<Passage> arr) {
 		String output = "";
 		for (Passage p : arr) {
-			for (Point point : p.passagePoints) {
-				output += (point.x + " " + point.y + ",");
-			}
-			output = output.substring(0, output.length()-1);
-			output += ":";
-			for (Point point : p.doors) {
-				output += (point.x + " " + point.y + ",");
-			}
-			if (p.doors.size() > 0)
+			if (p.passagePoints.size() > 0) {
+				for (Point point : p.passagePoints) {
+					output += (point.x + " " + point.y + ",");
+				}
 				output = output.substring(0, output.length()-1);
-			output += ":";
-			for (Ladder point : p.ladders) {
-				output += (point.origin.x + " " + point.origin.y + " " + point.length + ",");
 			}
-			if (p.ladders.size() > 0)
+			output += ":";
+			
+			if (p.doors.size() > 0) {
+				for (Point point : p.doors) {
+					output += (point.x + " " + point.y + ",");
+				}
 				output = output.substring(0, output.length()-1);
+			}
+			
+			output += ":";
+			
+			if (p.ladders.size() > 0) {
+				for (Ladder point : p.ladders) {
+					output += (point.origin.x + " " + point.origin.y + " " + point.length + ",");
+				}
+				output = output.substring(0, output.length()-1);
+			}
 			output += ":";
 			output += p.closedLeft;
 			output += ":";
@@ -42,7 +49,9 @@ public class SaveOpenHandler {
 	
 	public static void writeToFile (String path, ArrayList<Passage> arr) {
 		try {
-			FileWriter wr = new FileWriter (path);
+			String pth = path;
+			if (pth.lastIndexOf('.') == -1) pth += ".pas";
+			FileWriter wr = new FileWriter (pth);
 			wr.write(convertToText (arr));
 			wr.close();
 		} catch (IOException e) {

@@ -282,7 +282,8 @@ public class Display extends JFrame {
 		if (filePath == null || as) {
 			JFileChooser chooser = new JFileChooser ();
 			// TODO: Fix filtering
-			chooser.setFileFilter(new TextFilter ());
+			TextFilter tf = new TextFilter ();
+			chooser.addChoosableFileFilter(tf);
 			chooser.showSaveDialog(this);
 			File f = chooser.getSelectedFile();
 			if (f == null) return;
@@ -294,7 +295,8 @@ public class Display extends JFrame {
 	
 	public void open () {
 		JFileChooser chooser = new JFileChooser ();
-		chooser.setFileFilter(new TextFilter ());
+		TextFilter tf = new TextFilter ();
+		chooser.addChoosableFileFilter(tf);
 		chooser.showOpenDialog(this);
 		File f = chooser.getSelectedFile();
 		if (f == null) return;
