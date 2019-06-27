@@ -157,7 +157,6 @@ public class Display extends JFrame {
 		});
 		
 		
-		// TODO: More tools!
 		setupMenus ();
 		
 		setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -281,9 +280,6 @@ public class Display extends JFrame {
 		repackPassages();
 		if (filePath == null || as) {
 			JFileChooser chooser = new JFileChooser ();
-			// TODO: Fix filtering
-			TextFilter tf = new TextFilter ();
-			chooser.addChoosableFileFilter(tf);
 			chooser.showSaveDialog(this);
 			File f = chooser.getSelectedFile();
 			if (f == null) return;
@@ -295,8 +291,6 @@ public class Display extends JFrame {
 	
 	public void open () {
 		JFileChooser chooser = new JFileChooser ();
-		TextFilter tf = new TextFilter ();
-		chooser.addChoosableFileFilter(tf);
 		chooser.showOpenDialog(this);
 		File f = chooser.getSelectedFile();
 		if (f == null) return;
