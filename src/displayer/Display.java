@@ -23,7 +23,6 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 import file.SaveOpenHandler;
-import file.TextFilter;
 import main.Bounds;
 import main.Ladder;
 import main.Passage;
